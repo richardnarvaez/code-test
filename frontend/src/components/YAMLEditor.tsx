@@ -126,6 +126,11 @@ export function YAMLEditor({ value, onChange, hasError = false }: YAMLEditorProp
     editorRef.current = editor
     logger.debug("Editor mounted, registering completion provider")
 
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyA, () => {
+      logger.debug("Enter key pressed")
+      editor.trigger("manual-trigger", "editor.action.triggerSuggest", null)
+    })
+
     monaco.languages.setMonarchTokensProvider("yaml", {
       tokenizer: {
         root: [
