@@ -116,8 +116,16 @@ function App() {
 
           <div className="flex flex-col">
             <div className="mb-2">
-            <h2 className="text-lg font-semibold">Form Editor</h2>
-            <p className="text-sm text-gray-500">Edit the configuration form</p>
+              <h2 className="text-lg font-semibold">Form Editor</h2>
+              <p
+                className={`text-sm transition-all duration-300 ${
+                  config ? "text-gray-500" : "text-amber-600"
+                }`}
+              >
+                {config
+                  ? "Edit the configuration form"
+                  : "YAML is invalid or empty. Using default values."}
+              </p>
             </div>
             <div className="flex-1 bg-white rounded-md shadow-sm overflow-y-auto border border-gray-300">
               <ConfigForm config={config} onChange={updateConfig} validationErrors={validationErrors} />

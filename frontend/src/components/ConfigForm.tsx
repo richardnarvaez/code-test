@@ -51,11 +51,6 @@ export function ConfigForm({ config, onChange, validationErrors = [] }: ConfigFo
 
   return (
     <div className="p-6 space-y-6">
-      {!config && (
-        <div className="text-sm text-gray-500 mb-4">
-          YAML is invalid or empty. Using default values.
-        </div>
-      )}
       <div>
         <h2 className="text-xl font-semibold mb-4">Server Configuration</h2>
         <div className="space-y-4">
