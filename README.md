@@ -108,8 +108,9 @@ The frontend will be available at `http://localhost:5173`
 3. The default configuration will be loaded
 4. Edit the YAML in the left panel or use the form in the right panel
 5. Changes are automatically synchronized and saved after 500ms of inactivity
-6. Code completion appears automatically as you type, or press Ctrl+A (Cmd+Aon Mac) to trigger manually
-7. The completion service uses WebSocket for real-time suggestions based on your current YAML context
+6. Code completion appears automatically as you type, or press Ctrl+Space (Cmd+Space on Mac) to trigger manually
+7. In production, set the `VITE_API_BASE_URL` environment variable on the frontend to point to the deployed backend URL (for local dev it defaults to `http://localhost:8000`)
+8. The completion service uses WebSocket for real-time suggestions based on your current YAML context
 
 ## YAML Schema
 
