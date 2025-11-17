@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .animate-status-fade {
+    animation: statusFade 0.4s ease-in-out;
+  }
+  
+  @keyframes statusFade {
+    0% {
+      opacity: 0;
+      filter: blur(6px);
+      transform: translateY(-4px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0) scale(1);
+    }
+  }
+}

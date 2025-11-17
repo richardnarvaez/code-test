@@ -1,34 +1,131 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react"
+import { useYAMLConfig } from "./hooks/useYAMLConfig"
+import { YAMLEditor } from "./components/YAMLEditor"
+import { ConfigForm } from "./components/ConfigForm"
+import { ErrorPanel } from "./components/ErrorPanel"
+import { StatusIndicator } from "./components/StatusIndicator"
+import { Button } from "./components/ui/button"
+import { AlertCircle } from "lucide-react"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    yaml,
+    config,
+    error,
+    yamlError,
+    isLoading,
+    isSaving,
+    saveError,
+    saveSuccess,
+    lastValidYaml,
+    revertToLastValid,
+    updateYAML,
+    updateConfig,
+    validationErrors,
+    validationError,
+  } = useYAMLConfig()
+
+  const [showErrorOverlay, setShowErrorOverlay] = useState(false)
+  const hasError = !!yamlError || !!saveError || !!validationError
+
+  const handleRevert = () => {
+    revertToLastValid()
+    setShowErrorOverlay(false)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading configuration...</div>
+      </div>
+    )
+  }
+
+  if (error && !yaml) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-red-600 mb-2">Error loading configuration</div>
+          <div className="text-sm text-gray-600">{error}</div>
+          <div className="text-xs text-gray-500 mt-4">Make sure the backend is running on http://localhost:8000</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">YAML Configuration Editor</h1>
+          </div>
+          <div className="flex items-center">
+            <StatusIndicator
+              isSaving={isSaving}
+              saveSuccess={saveSuccess}
+              saveError={saveError}
+              yamlError={yamlError}
+              validationError={validationError}
+            />
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
+          <div className="flex flex-col relative">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+              <h2 className="text-lg font-semibold">YAML Editor</h2>
+              <p className="text-sm text-gray-500">Edit the YAML configuration file</p>
+              </div>
+              {hasError && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowErrorOverlay(!showErrorOverlay)}
+                  className={`flex items-center gap-2 ${
+                    showErrorOverlay 
+                      ? "border-red-500 bg-red-50 text-red-700 hover:bg-red-100" 
+                      : "border-red-300 text-red-600 hover:bg-red-50"
+                  }`}
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <span>{showErrorOverlay ? "Hide Errors" : "Show Errors"}</span>
+                </Button>
+              )}
+            </div>
+            <div className="flex-1 bg-white rounded-md shadow-sm relative">
+              <YAMLEditor value={yaml} onChange={updateYAML} hasError={hasError} />
+              
+              {hasError && showErrorOverlay && (
+                <div className="absolute inset-0 bg-red-50 z-10 overflow-y-auto rounded-md border border-red-500 overflow-hidden">
+                  <div className="p-4">
+                    <ErrorPanel
+                      error={saveError || validationError || yamlError || "Unknown error"}
+                      lastValidYaml={lastValidYaml || ""}
+                      onRevert={handleRevert}
+                      isYamlError={!!yamlError && !saveError && !validationError}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <div className="mb-2">
+            <h2 className="text-lg font-semibold">Form Editor</h2>
+            <p className="text-sm text-gray-500">Edit the configuration form</p>
+            </div>
+            <div className="flex-1 bg-white rounded-md shadow-sm overflow-y-auto border border-gray-300">
+              <ConfigForm config={config} onChange={updateConfig} validationErrors={validationErrors} />
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   )
 }
 
