@@ -52,7 +52,7 @@ code-test/
 
 ### Prerequisites
 
-- Node.js 20+ and npm
+- Node.js 20+ and pnpm (v9+ recommended)
 - Python 3.8+
 - pip
 
@@ -89,14 +89,14 @@ API documentation at `http://localhost:8000/docs`
 cd frontend
 ```
 
-2. Install dependencies:
+2. Install dependencies (pnpm is the default package manager for this project):
 ```bash
-npm install
+pnpm install
 ```
 
 3. Run the development server:
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The frontend will be available at `http://localhost:5173`
